@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>View Signups</title>
+
+<style>
+body{
+font-family:Arial;
+background:#f1f1f1;
+padding:30px;
+}
+
+table{
+border-collapse:collapse;
+width:100%;
+background:white;
+}
+
+th{
+background:#0d0d8b;
+color:white;
+padding:8px;
+}
+
+td{
+border:1px solid #ccc;
+padding:8px;
+}
+
+</style>
+
+<script>
+
+let allData=[];
+
+function loadData(){
+
+let data = localStorage.getItem("signups");
+
+if(data){
+allData = JSON.parse(data);
+}
+else{
+allData=[];
+}
+
+displayTable(allData);
+}
+
+function displayTable(data){
+
+let table = document.getElementById("tableBody");
+table.innerHTML="";
+
+if(data.length==0){
+table.innerHTML="<tr><td colspan='7'>No Sign Ups for the club</td></tr>";
+document.getElementById("total").innerText=0;
+return;
+}
+
+data.forEach(function(s){
+
+table.innerHTML+=`
+<tr>
+<td>${s.club}</td>
+<td>${s.id}</td>
+<td>${s.name}</td>
+<td>${s.grade}</td>
+<td>${s.email}</td>
+<td>${s.mobile}</td>
+<td>${s.status}</td>
+</tr>
+`;
+
+});
+
+document.getElementById("total").innerText=data.length;
+}
+
+function filterClub(){
+
+let club = document.getElementById("clubFilter").value;
+
+if(club=="all"){
+displayTable(allData);
+return;
+}
+
+let filtered = allData.filter(s=>s.club==club);
+
+displayTable(filtered);
+}
+
+</script>
+</head>
+
+<body onload="loadData()">
+
+<h2>Show List of Students Who Signed-Up</h2>
+
+<a href="CS3_2GSodiumAlpasan.html">Back to Signup</a>
+
+<br><br>
+
+Select Your Club
+
+<select id="clubFilter" onchange="filterClub()">
+<option value="all">All</option>
+<option>Computron</option>
+<option>Likha</option>
+<option>Alianti</option>
+<option>Himig Agham</option>
+<option>Karyo Biomedical Society</option>
+</select>
+
+<br><br>
+
+Total Signup : <span id="total">0</span>
+
+<br><br>
+
+<table>
+
+<tr>
+<th>Club</th>
+<th>ID</th>
+<th>Fullname</th>
+<th>Grade</th>
+<th>Email</th>
+<th>Mobile</th>
+<th>Intern|Extern</th>
+</tr>
+
+<tbody id="tableBody"></tbody>
+
+</table>
+
+</body>
+</html>
