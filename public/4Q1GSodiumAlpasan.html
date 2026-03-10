@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Movie Form</title>
+
+<style>
+
+body{
+font-family: Arial;
+background:#f2f2f2;
+}
+
+.container{
+width:420px;
+margin:auto;
+margin-top:40px;
+background:#e9e9e9;
+padding:20px;
+border-radius:8px;
+}
+
+h2{
+text-align:center;
+}
+
+input,select{
+width:100%;
+padding:8px;
+margin:8px 0;
+}
+
+button{
+width:100%;
+padding:10px;
+background:#1e73d8;
+color:white;
+border:none;
+border-radius:5px;
+cursor:pointer;
+}
+
+.stars span{
+font-size:22px;
+cursor:pointer;
+color:lightgray;
+}
+
+.movie{
+background:white;
+padding:8px;
+margin-top:8px;
+border-radius:5px;
+}
+
+.yellow{
+color:gold;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h2>Add a Movie</h2>
+
+<form id="movieForm">
+
+<label>Title:</label>
+<input type="text" id="title" required>
+
+<label>Year:</label>
+<input type="number" id="year" required>
+
+<label>Genre:</label>
+<select id="genre">
+<option>Action</option>
+<option>Comedy</option>
+<option>Drama</option>
+<option>Horror</option>
+<option>Romance</option>
+</select>
+
+<label>Rating:</label>
+
+<div class="stars" id="stars">
+<span data-value="1">★</span>
+<span data-value="2">★</span>
+<span data-value="3">★</span>
+<span data-value="4">★</span>
+<span data-value="5">★</span>
+</div>
+
+<br>
+
+<button type="submit">Add Movie</button>
+
+</form>
+
+<h2>Movie List</h2>
+<div id="movieList"></div>
+
+</div>
+
+<script>
+
+let rating = 0
+
+const stars = document.querySelectorAll("#stars span")
+
+stars.forEach(star=>{
+star.addEventListener("click",function(){
+
+rating = this.dataset.value
+
+stars.forEach(s=>s.style.color="lightgray")
+
+for(let i=0;i<rating;i++){
+stars[i].style.color="gold"
+}
+
+})
+})
+
+document.getElementById("movieForm").addEventListener("submit",function(e){
+
+e.preventDefault()
+
+const title=document.getElementById("title").value
+const year=document.getElementById("year").value
+const genre=document.getElementById("genre").value
+
+const movie={
+title:title,
+year:year,
+genre:genre,
+rating:rating
+}
+
+let movies=JSON.parse(localStorage.getItem("movies")) || []
+
+movies.push(movie)
+
+localStorage.setItem("movies",JSON.stringify(movies))
+
+displayMovies()
+
+this.reset()
+
+stars.forEach(s=>s.style.color="lightgray")
+rating=0
+
+})
+
+function displayMovies(){
+
+const list=document.getElementById("movieList")
+
+let movies=JSON.parse(localStorage.getItem("movies")) || []
+
+list.innerHTML=""
+
+movies.forEach(movie=>{
+
+let starDisplay=""
+
+for(let i=0;i<movie.rating;i++){
+starDisplay+="<span class='yellow'>★</span>"
+}
+
+list.innerHTML+=`
+<div class="movie">
+${movie.title} (${movie.year}) - ${movie.genre}, Rating: ${starDisplay}
+</div>
+`
+
+})
+
+}
+
+displayMovies()
+
+</script>
+
+</body>
+</html>
